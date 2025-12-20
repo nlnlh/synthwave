@@ -1,0 +1,5 @@
+{
+  "name": "Neon Horizon",
+  "description": "A 3D Synthwave/Vaporwave scene featuring a retro sun, procedural neon city, and infinite grid terrain using GLSL shaders and React Three Fiber.",
+  "requestFramePermissions": []
+}
