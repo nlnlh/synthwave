@@ -1,5 +1,5 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/nlnlh/synthwave/blob/18fce852645b0cc4e43edb6f6f09ac09587429d0/banner.png" />
+<img width="800" height="450" alt="GHBanner" src="https://github.com/nlnlh/synthwave/blob/18fce852645b0cc4e43edb6f6f09ac09587429d0/banner.png" />
 </div>
 
 # Run and deploy your AI Studio app
