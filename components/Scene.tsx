@@ -15,8 +15,8 @@ const CameraRig = () => {
         const { x, y } = state.pointer;
         // Smoothly interpolate camera position based on mouse coordinates
         // This gives the feeling of looking around or piloting
-        state.camera.position.x = THREE.MathUtils.lerp(state.camera.position.x, x * 4, 0.05);
-        state.camera.position.y = THREE.MathUtils.lerp(state.camera.position.y, 3 + y * 2, 0.05);
+        state.camera.position.x = THREE.MathUtils.lerp(state.camera.position.x, x * 4, 0.2);
+        state.camera.position.y = THREE.MathUtils.lerp(state.camera.position.y, 3 + y * 2, 0.2);
         
         // Always look towards the horizon/sun
         state.camera.lookAt(0, 5, -100);
@@ -43,7 +43,7 @@ const SpeedLines = () => {
         meshRefs.current.forEach((mesh, i) => {
             if (!mesh) return;
             // High speed multiplier for speed lines
-            mesh.position.z += lines[i].speed * 40 * delta;
+            mesh.position.z += lines[i].speed * 80 * delta;
             
             if (mesh.position.z > 10) {
                 mesh.position.z = -100;

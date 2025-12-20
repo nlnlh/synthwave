@@ -106,7 +106,7 @@ export const City = () => {
 
   useFrame((state, delta) => {
     // High Speed Flight: 30 units/second
-    const speed = 30.0;
+    const speed = 60.0;
     const respawnZ = -150; // Just at/behind the sun position
 
     buildingRefs.current.forEach((mesh) => {

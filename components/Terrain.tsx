@@ -32,7 +32,7 @@ const GridMaterial = shaderMaterial(
         
         // Add moving waves/noise to the mountains so they feel like they are passing by
         // We offset the sine wave by uTime to match the grid scrolling speed roughly
-        float waveSpeed = 12.0;
+        float waveSpeed = 24.0;
         
         // Combine sine waves for a "digital terrain" look
         float waveZ = sin(uv.y * 10.0 + uTime * 12.0) * 2.0; 
@@ -63,7 +63,7 @@ const GridMaterial = shaderMaterial(
       vec2 gridUv = vUv * 60.0;
       
       // Move texture to simulate speed
-      gridUv.y += uTime * 12.0;
+      gridUv.y += uTime * 24.0;
 
       vec2 grid = fract(gridUv);
       float lineThickness = 0.05;
