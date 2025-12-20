@@ -1,74 +1,58 @@
-name: myci
+name: Deploy static content to Pages
 
-# on 代表触发事件
 on:
-# 当 push 时触发工作流
+  # 监听 main 分支的 push 事件，一旦有代码提交就运行
   push:
-# 当特定 branches 发生 push 时触发，这里就是 master 分支
-    branches:
-    - master
-# 当特定路径发生 push 时触发，这里是 src 文件夹
-    paths:
-    - src/*
+    branches: ["main"]
 
-# 不写 permissions 的话，在部署时容易出错
+  # 允许你在 GitHub Actions 页面手动触发部署
+  workflow_dispatch:
+
+# 设置权限，允许 GITHUB_TOKEN 读取仓库并发布 Pages
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
-# 工作流的任务
+# 只允许同时进行一个部署任务，避免冲突
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
-# build 是自定义的名字，可以随意命名
+  # 构建任务
   build:
-# 工作流执行的系统环境
     runs-on: ubuntu-latest
-# 多策略用法，使用的不多
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-# 工作流执行的具体命令
     steps:
-# uses 可以接多种类型，最常用的就是接另一个代码仓库，这里就是一个代码仓库，它的流程就是下载我仓库的代码
-    - name: 检出代码
-      uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: $
-# 这里的 name 是为 run 起一个名字，会在 GitHub 上显示，也可以不写
-    - name: 安装依赖
-# run 后边加 | 可以支持写多行脚本
-      run: |
-        npm install
-        npm run build
-    - name: 上传文件
-      uses: actions/upload-artifact@v4
-      with: 
-        name: build-pages
-        path: build
-        retention-days: 1
-# deploy 是任务名字
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20" # 使用 Node 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Vite 默认构建输出目录是 dist，如果你的不同请修改这里
+          path: ./dist
+
+  # 部署任务
   deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v4
-      with:
-        name: build-pages
-        path: build
-    - name: 部署
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        branch: gh-pages
-        folder: build
-# 另一个任务
-  work:
-    runs-on: ubuntu-latest
-# 这个任务用到 nginx 服务
-    services:
-      nginx:
-        image: nginx
-        ports:
-          - 8080:80
-    steps:
-    - uses: actions/checkout@v4
-    - run: curl localhost:8080
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
