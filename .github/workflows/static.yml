@@ -1,43 +1,74 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: myci
 
+# on 代表触发事件
 on:
-  # Runs on pushes targeting the default branch
+# 当 push 时触发工作流
   push:
-    branches: ["main"]
+# 当特定 branches 发生 push 时触发，这里就是 master 分支
+    branches:
+    - master
+# 当特定路径发生 push 时触发，这里是 src 文件夹
+    paths:
+    - src/*
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# 不写 permissions 的话，在部署时容易出错
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
+# 工作流的任务
 jobs:
-  # Single deploy job since we're just deploying
+# build 是自定义的名字，可以随意命名
+  build:
+# 工作流执行的系统环境
+    runs-on: ubuntu-latest
+# 多策略用法，使用的不多
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+# 工作流执行的具体命令
+    steps:
+# uses 可以接多种类型，最常用的就是接另一个代码仓库，这里就是一个代码仓库，它的流程就是下载我仓库的代码
+    - name: 检出代码
+      uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: $
+# 这里的 name 是为 run 起一个名字，会在 GitHub 上显示，也可以不写
+    - name: 安装依赖
+# run 后边加 | 可以支持写多行脚本
+      run: |
+        npm install
+        npm run build
+    - name: 上传文件
+      uses: actions/upload-artifact@v4
+      with: 
+        name: build-pages
+        path: build
+        retention-days: 1
+# deploy 是任务名字
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload entire repository
-          path: '.'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: build-pages
+        path: build
+    - name: 部署
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages
+        folder: build
+# 另一个任务
+  work:
+    runs-on: ubuntu-latest
+# 这个任务用到 nginx 服务
+    services:
+      nginx:
+        image: nginx
+        ports:
+          - 8080:80
+    steps:
+    - uses: actions/checkout@v4
+    - run: curl localhost:8080
