@@ -38,8 +38,8 @@ const SunMaterial = shaderMaterial(
       
       // Calculate stripes
       float y = uv.y;
-      float stripeCount = 20.0;
-      float stripeSpeed = 0.05;
+      float stripeCount = 25.0;
+      float stripeSpeed = 0.8;
       
       // Deform the grid slightly for style
       float pos = y * stripeCount - uTime * stripeSpeed;
@@ -47,8 +47,8 @@ const SunMaterial = shaderMaterial(
       // Step function to create the cuts
       float intensity = step(0.5 * (1.0 - y), sin(pos * 3.14159));
       
-      // The sun is solid at the very top (above 0.6)
-      if (y > 0.6) intensity = 1.0;
+      // The sun is solid at the very top (above 0.5)
+      if (y > 0.5) intensity = 1.0;
 
       // Add a pulsing glow overlay that moves down
       float pulse = sin(uv.y * 20.0 - uTime * 5.0) * 0.5 + 0.5;

@@ -1,13 +1,18 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Scene } from './components/Scene';
 
 const App = () => {
   const [audioPlaying, setAudioPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Mock audio start - in a real app this would trigger music
   const handleStart = () => {
-    setAudioPlaying(true);
+    if (audioRef.current) {
+      audioRef.current.play().catch(error => {
+        console.error('Audio playback failed:', error);
+      });
+      setAudioPlaying(true);
+    }
   };
 
   return (
@@ -54,7 +59,7 @@ const App = () => {
                     <div className="absolute inset-0 border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.5)] group-hover:shadow-[0_0_25px_rgba(0,255,255,0.8)] transition-shadow duration-300"></div>
                     <div className="absolute inset-0 bg-cyan-900/20 group-hover:bg-cyan-800/40 transition-colors duration-300"></div>
                     <span className="relative text-cyan-300 font-bold tracking-widest text-xl group-hover:text-white transition-colors" style={{ fontFamily: '"Press Start 2P", cursive' }}>
-                        ENTER SYSTEM
+                        ENTER WORLD
                     </span>
                 </button>
             </div>
@@ -69,6 +74,11 @@ const App = () => {
             </div>
         </footer>
       </div>
+
+      {/* Hidden Audio Element */}
+      <audio ref={audioRef} loop>
+        <source src="/musics/background.mp3" type="audio/mpeg" />
+      </audio>
 
       {/* Vignette Overlay (CSS fallback) */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.6)_100%)] z-10"></div>
