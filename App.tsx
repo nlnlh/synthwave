@@ -77,7 +77,7 @@ const App = () => {
 
       {/* Hidden Audio Element */}
       <audio ref={audioRef} loop>
-        <source src="/musics/background.mp3" type="audio/mpeg" />
+        <source src="https://raw.githubusercontent.com/nlnlh/synthwave/master/musics/background.mp3" type="audio/mpeg" />
       </audio>
 
       {/* Vignette Overlay (CSS fallback) */}
