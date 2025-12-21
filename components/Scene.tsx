@@ -9,17 +9,58 @@ import { RetroSun } from './RetroSun';
 import { Terrain } from './Terrain';
 import { City } from './City';
 
-// Camera Rig for Mouse Parallax
-const CameraRig = () => {
+// Automatic Flight Camera Rig
+// Simulates a first-person aircraft flying through the scene
+const FlightCameraRig = () => {
     useFrame((state) => {
-        const { x, y } = state.pointer;
-        // Smoothly interpolate camera position based on mouse coordinates
-        // This gives the feeling of looking around or piloting
-        state.camera.position.x = THREE.MathUtils.lerp(state.camera.position.x, x * 4, 0.2);
-        state.camera.position.y = THREE.MathUtils.lerp(state.camera.position.y, 3 + y * 2, 0.2);
+        const t = state.clock.elapsedTime;
         
-        // Always look towards the horizon/sun
-        state.camera.lookAt(0, 5, -100);
+        // Base Speed for the "waviness" of the flight
+        const speed = 0.5;
+
+        // Combine sine waves to create a pseudo-random, non-repetitive path
+        // X motion (Left/Right)
+        const x = Math.sin(t * speed * 0.5) * 3 
+                + Math.sin(t * speed * 1.3) * 3
+                + Math.cos(t * speed * 0.2) * 2;
+        
+        // Y motion (Up/Down) - Keeping it relatively low to the ground but with variation
+        const y = 6 
+                + Math.sin(t * speed * 0.7) * 3 
+                + Math.cos(t * speed * 1.5) * 1;
+        
+        // Calculate velocity (derivative of x) to determine banking/roll angle
+        // Approximation of derivative for X
+        const dx = (Math.cos(t * speed * 0.5) * 0.5 * 3 
+                  + Math.cos(t * speed * 1.3) * 1.3 * 3 
+                  - Math.sin(t * speed * 0.2) * 0.2 * 2);
+
+        // Add high-frequency jitter to simulate engine vibration/turbulence
+        const jitterFreq = 25;
+        const jitterAmp = 0.03;
+        const jitterX = Math.sin(t * jitterFreq) * jitterAmp;
+        const jitterY = Math.cos(t * jitterFreq * 1.2) * jitterAmp;
+        const jitterRot = Math.sin(t * jitterFreq * 1.5) * (jitterAmp * 0.5);
+
+        // Smoothly interpolate current camera position to target
+        // This acts as a spring/damper system
+        state.camera.position.x = THREE.MathUtils.lerp(state.camera.position.x, x + jitterX, 0.1);
+        state.camera.position.y = THREE.MathUtils.lerp(state.camera.position.y, y + jitterY, 0.1);
+        
+        // Always look towards the horizon (Sun position is at Z -150)
+        // We add a slight offset to the look target based on movement to simulate "looking into the turn"
+        const lookTarget = new THREE.Vector3(
+            x * 0.5, 
+            y * 0.5 - 10, 
+            -100
+        );
+        state.camera.lookAt(lookTarget);
+
+        // Apply Roll (Banking)
+        // When moving left, bank left.
+        // We calculate desired roll and lerp to it for smoothness
+        const targetRoll = -dx * 0.2; // Scaling factor for intensity of roll
+        state.camera.rotation.z = THREE.MathUtils.lerp(state.camera.rotation.z, targetRoll + jitterRot, 0.1);
     });
     return null;
 }
@@ -65,11 +106,15 @@ const SpeedLines = () => {
     )
 }
 
-export const Scene = () => {
+interface SceneProps {
+    audioRef?: React.RefObject<HTMLAudioElement | null>;
+}
+
+export const Scene: React.FC<SceneProps> = ({ audioRef }) => {
   return (
     <>
       <PerspectiveCamera makeDefault position={[0, 3, 10]} fov={75} />
-      <CameraRig />
+      <FlightCameraRig />
       
       {/* Dynamic Lighting */}
       <ambientLight intensity={0.5} color="#4c1d95" /> {/* Purple ambient */}
