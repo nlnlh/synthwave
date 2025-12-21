@@ -1,20 +1,49 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+<img width="800" height="450" alt="GHBanner" src="./banner.png" />
 </div>
 
-# Run and deploy your AI Studio app
+# Synthwave 🌌
 
-This contains everything you need to run your app locally.
+A stunning AI-powered synthwave art generator that creates retro-futuristic visuals with vibe coding.
 
-View your app in AI Studio: https://ai.studio/apps/drive/186DEltleJrd6vK3me1Lv4YJ9p9LIzYxr
+## 🚀 Run Online
 
-## Run Locally
+Experience Synthwave instantly without installation:
 
-**Prerequisites:**  Node.js
+👉 **[https://nlnlh.github.io/synthwave/](https://nlnlh.github.io/synthwave/)**
 
+## 🖥️ Run Locally
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+**Prerequisites:** Node.js 18+
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/nlnlh/synthwave.git
+   cd synthwave
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open your browser:**
+   Navigate to `http://localhost:5173` to start creating!
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to submit issues and pull requests.
+
+## 📄 License
+
+MIT License - feel free to use this project for personal or commercial purposes.
+
+## 🙏 Acknowledgments
+
+- Built with React and Vite
+- Synthwave aesthetic inspiration from the 80s retro-futurism movement
