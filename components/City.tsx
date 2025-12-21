@@ -99,7 +99,7 @@ const generateBuildings = (count: number) => {
 
 export const City = () => {
   // Use more buildings for denser high-speed effect
-  const buildingsData = useMemo(() => generateBuildings(120), []);
+  const buildingsData = useMemo(() => generateBuildings(80), []);
   const buildingRefs = useRef<(THREE.Mesh | null)[]>([]);
   // We need refs for materials to update uniforms if we wanted (e.g. pulsing colors), 
   // but currently shader uniforms are static or world-pos dependent.
