@@ -67,14 +67,14 @@ const BuildingMaterial = shaderMaterial(
 // Helper to generate random buildings
 const generateBuildings = (count: number) => {
   const buildings = [];
-  const roadWidth = 10;
+  const roadWidth = 20;
   
   for (let i = 0; i < count; i++) {
     // Determine side of the road (-1 left, 1 right)
-    const side = Math.random() > 0.5 ? 1 : -1;
+    const side = Math.random() > 0.4 ? 1 : -1;
     
     // Position
-    const x = side * (roadWidth / 2 + Math.random() * 30 + 5); // Wider spread
+    const x = side * (roadWidth / 2 + Math.random() * 30 + 8); // Wider spread
     // Initial spread matches the loop logic below
     const z = -Math.random() * 160; 
     
@@ -121,7 +121,7 @@ export const City = () => {
         mesh.position.z = respawnZ;
         
         // Randomize X again for variety
-        const roadWidth = 10;
+        const roadWidth = 20;
         const side = Math.random() > 0.5 ? 1 : -1;
         mesh.position.x = side * (roadWidth / 2 + Math.random() * 30 + 5);
       }

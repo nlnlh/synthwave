@@ -1,4 +1,7 @@
 {
-  "name": "Neon Horizon",
-  "description": "A 3D Synthwave/Vaporwave scene featuring a retro sun, procedural neon city, and infinite grid terrain using GLSL shaders and React Three Fiber."
+  "name": "Neon Horizon v0.5a",
+  "description": "A 3D Synthwave/Vaporwave scene featuring a retro sun, procedural neon city, and infinite grid terrain using GLSL shaders and React Three Fiber. Includes AI Voice Comms.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
 }

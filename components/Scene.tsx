@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import { RetroSun } from './RetroSun';
 import { Terrain } from './Terrain';
 import { City } from './City';
+import { Spectrum } from './Spectrum';
 
 // Automatic Flight Camera Rig
 // Simulates a first-person aircraft flying through the scene
@@ -126,6 +127,9 @@ export const Scene: React.FC<SceneProps> = ({ audioRef }) => {
 
       <group>
         <RetroSun />
+        {/* Audio Spectrum Visualizer around the Sun */}
+        <Spectrum audioRef={audioRef} />
+        
         <City />
         <Terrain />
         <SpeedLines />
