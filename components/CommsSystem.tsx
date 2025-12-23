@@ -8,7 +8,7 @@ interface CommsSystemProps {
 }
 
 type Message = {
-  role: 'user' | 'model';
+  role: 'user' | 'assistant';
   text: string;
 };
 
@@ -92,18 +92,15 @@ export const CommsSystem: React.FC<CommsSystemProps> = ({ audioRef, onExit, setA
 
       const response = await ai.chat.completions.create({
         model: model,
-        messages: [...history, { role: 'user', content: text }],
+        messages: [{ role: 'system', content: systemPrompt }, ...history, { role: 'user', content: text }],
         max_tokens: 100,
-        config: {
-          systemInstruction: systemPrompt,
-        }
       });
 
       const aiText = response.choices[0].message.content || "...Signal Lost...";
-      setMessages(prev => [...prev, { role: 'model', text: aiText }]);
+      setMessages(prev => [...prev, { role: 'assistant', text: aiText }]);
     } catch (error) {
       console.error("AI Comms Error:", error);
-      setMessages(prev => [...prev, { role: 'model', text: "ERR: ENCRYPTION_FAIL" }]);
+      setMessages(prev => [...prev, { role: 'assistant', text: "ERR: ENCRYPTION_FAIL" }]);
     } finally {
       setIsProcessing(false);
     }
@@ -214,7 +211,7 @@ export const CommsSystem: React.FC<CommsSystemProps> = ({ audioRef, onExit, setA
       displayRole = lastMessage.role;
   } else {
       displayText = "COMMS LINK ESTABLISHED.";
-      displayRole = "model";
+      displayRole = "assistant";
   }
 
   return (
